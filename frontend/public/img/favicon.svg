@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="carGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#66BB6A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#43A047;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="32" fill="url(#carGradient)"/>
+  
+  <!-- Car body -->
+  <path d="M 16 35 L 20 28 L 25 25 L 39 25 L 44 28 L 48 35 L 48 42 L 46 44 L 18 44 L 16 42 Z" 
+        fill="#ffffff" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Car windows -->
+  <path d="M 22 28 L 26 26 L 32 26 L 32 32 L 22 32 Z" fill="#4CAF50" opacity="0.7"/>
+  <path d="M 33 26 L 38 26 L 42 28 L 42 32 L 33 32 Z" fill="#4CAF50" opacity="0.7"/>
+  
+  <!-- Wheels -->
+  <circle cx="23" cy="44" r="4" fill="#2E7D32" stroke="#ffffff" stroke-width="1.5"/>
+  <circle cx="23" cy="44" r="2" fill="#1B5E20"/>
+  
+  <circle cx="41" cy="44" r="4" fill="#2E7D32" stroke="#ffffff" stroke-width="1.5"/>
+  <circle cx="41" cy="44" r="2" fill="#1B5E20"/>
+  
+  <!-- Headlight -->
+  <circle cx="47" cy="36" r="1.5" fill="#FFF9C4"/>
+  
+  <!-- Document paper overlay (top right corner) -->
+  <rect x="42" y="12" width="14" height="18" rx="1" fill="#ffffff" stroke="#4CAF50" stroke-width="1.5"/>
+  <line x1="45" y1="16" x2="53" y2="16" stroke="#4CAF50" stroke-width="1"/>
+  <line x1="45" y1="19" x2="53" y2="19" stroke="#4CAF50" stroke-width="1"/>
+  <line x1="45" y1="22" x2="53" y2="22" stroke="#4CAF50" stroke-width="1"/>
+  <line x1="45" y1="25" x2="50" y2="25" stroke="#4CAF50" stroke-width="1"/>
+</svg>
