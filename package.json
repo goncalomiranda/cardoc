@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "concurrently": "^9.2.1",
+    "pdf2pic": "^3.2.0"
+  },
+  "scripts": {
+    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backend": "npm run copy:frontend && npm run copy:backend",
+    "copy:frontend": "rm -rf backend/public && cp -r frontend/build backend/public",
+    "copy:backend": "rm -rf dist && mkdir -p dist && rsync -av --exclude='node_modules' --exclude='.env' --exclude='.env.*' backend/ dist/",
+    "start:prod": "cd dist && NODE_ENV=production node server.js"
+  }
+}
