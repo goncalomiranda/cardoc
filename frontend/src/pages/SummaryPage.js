@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
+import Footer from "../components/Footer";
 
 function SummaryPage() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -77,17 +78,29 @@ function SummaryPage() {
       <div className="container">
         <div className="row">
           <div className="col-lg-8 mx-auto text-center py-5 mt-5">
-            <h1 className="text-white mb-2 mt-5">
+            <h1
+              className="text-white mb-3 mt-5 fw-bold"
+              style={{
+                fontSize: "3rem",
+                textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
+              }}
+            >
               AI-Powered Document Summarizer
             </h1>
-            <p className="lead text-white opacity-8">
+            <p
+              className="lead text-white mb-0"
+              style={{
+                fontSize: "1.25rem",
+                textShadow: "1px 1px 2px rgba(0,0,0,0.2)",
+              }}
+            >
               Upload your car documents and get instant AI-powered summaries
             </p>
           </div>
         </div>
       </div>
 
-      <div className="container mt-5 pb-5">
+      <div className="container pb-5" style={{ marginTop: "4rem" }}>
         <div className="row">
           <div className="col-lg-10 mx-auto">
             {/* Upload Card */}
@@ -300,6 +313,7 @@ function SummaryPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -12,7 +12,13 @@ function Header() {
     <div className="container position-sticky z-index-sticky top-0">
       <div className="row">
         <div className="col-12">
-          <nav className="navbar navbar-expand-lg blur border-radius-xl top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4 navbar-custom">
+          <nav
+            className="navbar navbar-expand-lg blur border-radius-xl top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4"
+            style={{
+              background: "rgba(255, 255, 255, 0.98)",
+              backdropFilter: "saturate(200%) blur(30px)",
+            }}
+          >
             <div className="container-fluid px-0">
               <Link className="navbar-brand font-weight-bolder ms-sm-3" to="/">
                 <i className="material-symbols-rounded me-2">directions_car</i>
@@ -39,17 +45,6 @@ function Header() {
               >
                 <ul className="navbar-nav navbar-nav-hover ms-auto">
                   <SignedIn>
-                    <li className="nav-item mx-2">
-                      <Link
-                        className="nav-link ps-2 d-flex align-items-center"
-                        to="/"
-                      >
-                        <i className="material-symbols-rounded opacity-6 me-2">
-                          upload_file
-                        </i>
-                        <span className="d-sm-inline d-none">Upload</span>
-                      </Link>
-                    </li>
                     <li className="nav-item mx-2">
                       <Link
                         className="nav-link ps-2 d-flex align-items-center"
