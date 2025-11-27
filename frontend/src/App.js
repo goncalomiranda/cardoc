@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import SummaryPage from "./pages/SummaryPage";
 import ProtectedPage from "./components/ProtectedPage";
+import "./styles/cardoc-theme.css";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key from Clerk");
@@ -21,7 +22,7 @@ function ClerkWithRoutes() {
   return (
     <ClerkProvider publishableKey={clerkPubKey} navigate={(to) => navigate(to)}>
       <Header />
-      <main className="container-fluid py-4 bg-light min-vh-100">
+      <main className="bg-gray-200 min-vh-100">
         <Routes>
           <Route
             path="/"
@@ -49,7 +50,6 @@ function ClerkWithRoutes() {
               </>
             }
           />
-          {/* Add more routes here if needed */}
         </Routes>
       </main>
     </ClerkProvider>
