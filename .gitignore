@@ -42,3 +42,4 @@ coverage/
 *.temp
 .cache/eng.traineddata
 backend/eng.traineddata
+backend/debug/
