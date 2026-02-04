@@ -10,9 +10,85 @@ function SummaryPage() {
   const [loading, setLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const [documentType, setDocumentType] = useState("not-sure");
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const { getToken } = useAuth();
+
+  // Document type options organized by category
+  const documentTypes = {
+    "Not Sure": [{ value: "not-sure", label: "Not sure - Auto-detect" }],
+    "🏠 Housing & Real Estate": [
+      {
+        value: "residential-lease",
+        label: "Residential lease / rental agreement",
+      },
+      { value: "lease-renewal", label: "Lease renewal / amendment" },
+      { value: "commercial-lease", label: "Commercial lease" },
+      { value: "property-purchase", label: "Property purchase agreement" },
+      { value: "mortgage-agreement", label: "Mortgage agreement" },
+      { value: "condo-bylaws", label: "Condo bylaws / condo rules" },
+      { value: "home-insurance", label: "Home insurance policy" },
+    ],
+    "🚗 Vehicles & Transportation": [
+      { value: "vehicle-purchase", label: "Vehicle purchase agreement" },
+      { value: "auto-loan", label: "Auto loan agreement" },
+      { value: "vehicle-lease", label: "Vehicle lease" },
+      { value: "extended-warranty", label: "Extended warranty" },
+      { value: "auto-insurance", label: "Insurance policy (auto)" },
+      { value: "rideshare-agreement", label: "Ride-share / fleet agreements" },
+    ],
+    "💼 Employment & Work": [
+      { value: "employment-contract", label: "Employment contract" },
+      {
+        value: "contractor-agreement",
+        label: "Independent contractor agreement",
+      },
+      { value: "offer-letter", label: "Offer letter" },
+      { value: "non-compete", label: "Non-compete / non-solicit" },
+      { value: "severance-agreement", label: "Severance agreement" },
+      { value: "nda", label: "NDA / confidentiality agreement" },
+      {
+        value: "union-agreement",
+        label: "Union agreement (collective agreement)",
+      },
+    ],
+    "💳 Finance & Banking": [
+      { value: "personal-loan", label: "Personal loan agreement" },
+      { value: "line-of-credit", label: "Line of credit" },
+      { value: "credit-card", label: "Credit card agreement" },
+      { value: "mortgage-renewal", label: "Mortgage renewal" },
+      { value: "investment-account", label: "Investment account agreement" },
+      { value: "rrsp-tfsa", label: "RRSP / TFSA terms" },
+      { value: "debt-settlement", label: "Debt settlement agreement" },
+    ],
+    "🏛 Government & Taxes": [
+      { value: "cra-notice", label: "CRA notices" },
+      { value: "tax-assessment", label: "Tax assessments" },
+      { value: "payment-plan", label: "Payment plans" },
+      { value: "benefits-agreement", label: "Benefits agreements (EI, CPP)" },
+      { value: "immigration-docs", label: "Immigration documents" },
+      { value: "student-loan", label: "Student loan agreements" },
+    ],
+    "📱 Services & Subscriptions": [
+      {
+        value: "telecom-contract",
+        label: "Telecom contracts (internet, mobile)",
+      },
+      { value: "utility-agreement", label: "Utility agreements" },
+      { value: "gym-membership", label: "Gym memberships" },
+      { value: "saas-contract", label: "SaaS / software contracts" },
+      { value: "cancellation-policy", label: "Cancellation policies" },
+    ],
+    "🧾 Legal & Misc": [
+      { value: "settlement-agreement", label: "Settlement agreements" },
+      { value: "power-of-attorney", label: "Power of attorney" },
+      { value: "separation-agreement", label: "Separation agreements" },
+      { value: "small-claims", label: "Small claims documents" },
+      { value: "will-analysis", label: "Wills (analysis only)" },
+      { value: "other-contract", label: "Other / Unknown contract" },
+    ],
+  };
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -52,6 +128,7 @@ function SummaryPage() {
 
     const formData = new FormData();
     formData.append("document", selectedFile);
+    formData.append("documentType", documentType);
 
     try {
       const token = await getToken();
@@ -232,6 +309,56 @@ function SummaryPage() {
                     </>
                   )}
                 </div>
+
+                {/* Document Type Selector */}
+                {selectedFile && (
+                  <div className="mt-4">
+                    <label
+                      htmlFor="document-type"
+                      className="form-label"
+                      style={{
+                        color: "#1a1a1a",
+                        fontWeight: 500,
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      <i
+                        className="material-symbols-rounded me-2"
+                        style={{ fontSize: "1.2rem", verticalAlign: "middle" }}
+                      >
+                        category
+                      </i>
+                      What type of document is this?
+                    </label>
+                    <select
+                      id="document-type"
+                      className="form-select"
+                      value={documentType}
+                      onChange={(e) => setDocumentType(e.target.value)}
+                      style={{
+                        borderRadius: "6px",
+                        border: "1px solid #d0d0d0",
+                        padding: "10px 12px",
+                        fontSize: "0.95rem",
+                      }}
+                    >
+                      {Object.entries(documentTypes).map(
+                        ([category, options]) => (
+                          <optgroup key={category} label={category}>
+                            {options.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ),
+                      )}
+                    </select>
+                    <small className="text-secondary d-block mt-1">
+                      💡 Choose "Not sure" for automatic detection
+                    </small>
+                  </div>
+                )}
 
                 {/* Action Buttons */}
                 {selectedFile && (
