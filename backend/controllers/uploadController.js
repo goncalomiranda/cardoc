@@ -158,38 +158,35 @@ exports.summarizeDocument = async (req, res, next) => {
           /"year"\s*:\s*"(\d{4})"/g,
           '"year":$1',
         );
-        
+
         // 7. Fix termInMonths to term
-        cleanedSummary = cleanedSummary.replace(
-          /"termInMonths":/g,
-          '"term":',
-        );
+        cleanedSummary = cleanedSummary.replace(/"termInMonths":/g, '"term":');
 
         // 8. Fix spending as string to number (e.g., "spending": "$68500" -> "spending": 68500)
         cleanedSummary = cleanedSummary.replace(
           /"spending"\s*:\s*"\$?([\d,]+(?:\.\d{2})?)"/g,
           (match, amount) => `"spending":${amount.replace(/,/g, "")}`,
         );
-        
+
         // 9. Fix missing decimal points in large numbers (e.g., 9098045 -> 90980.45, 68426296 -> 68462.96)
         // This targets salePrice and principalAmount that are likely missing decimals
         cleanedSummary = cleanedSummary.replace(
           /"(salePrice|principalAmount)"\s*:\s*(\d{7,})/g,
           (match, field, value) => {
             // Insert decimal point 2 positions from the right
-            const corrected = value.slice(0, -2) + '.' + value.slice(-2);
+            const corrected = value.slice(0, -2) + "." + value.slice(-2);
             return `"${field}":${corrected}`;
-          }
+          },
         );
-        
+
         // 10. Fix interest rate as too-small decimal (0.0399 -> 3.99)
         cleanedSummary = cleanedSummary.replace(
           /"interestRate"\s*:\s*0\.0(\d{3,})/g,
           (match, digits) => {
             // Convert 0.0399 to 3.99
-            const rate = parseFloat('0.0' + digits) * 100;
+            const rate = parseFloat("0.0" + digits) * 100;
             return `"interestRate":${rate}`;
-          }
+          },
         );
 
         // 11. Fix upcomingEvents missing daysUntil - add 0 as default

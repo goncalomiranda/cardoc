@@ -69,7 +69,6 @@ function SummaryPage() {
           summaryData = JSON.parse(summaryData);
         } catch (parseError) {
           console.log("Summary is plain text, not JSON - cannot parse");
-          // If parsing fails, show error modal instead of displaying malformed data
           setError(
             "Unable to process the document analysis. Please try uploading again.",
           );
@@ -83,7 +82,6 @@ function SummaryPage() {
       if (typeof summaryData === "object" && summaryData.keyInsights) {
         setSummary(summaryData);
       } else {
-        // Invalid structure, show error
         setError(
           "Unable to process the document analysis. Please try uploading again.",
         );
@@ -93,7 +91,7 @@ function SummaryPage() {
       console.error("Upload error:", err);
       setError(
         err.response?.data?.message ||
-          "Failed to summarize document. Please try again.",
+          "Failed to analyze document. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -101,482 +99,531 @@ function SummaryPage() {
   };
 
   return (
-    <div className="gradient-overlay">
+    <div style={{ background: "#f8f9fa", minHeight: "100vh" }}>
       <div className="container">
         <div className="row">
           <div className="col-lg-8 mx-auto text-center py-5 mt-5">
             <h1
-              className="text-white mb-3 mt-5 fw-bold"
+              className="mb-3 mt-5 fw-bold"
               style={{
-                fontSize: "3rem",
-                textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
+                fontSize: "3.5rem",
+                color: "#1a1a1a",
               }}
             >
-              AI-Powered Document Summarizer
+              Unlock Insights from Your Documents
             </h1>
             <p
-              className="lead text-white mb-0"
+              className="lead mb-4"
               style={{
                 fontSize: "1.25rem",
-                textShadow: "1px 1px 2px rgba(0,0,0,0.2)",
+                color: "#6c757d",
               }}
             >
-              Upload your car documents (PDF, PNG, JPEG) and get instant
-              AI-powered summaries
+              A secure vault to store, organize, and analyze your important
+              documents.
             </p>
+            {!summary && (
+              <button
+                className="btn btn-lg px-5 py-3"
+                style={{
+                  fontSize: "1.1rem",
+                  borderRadius: "8px",
+                  background: "#4285F4",
+                  border: "none",
+                  color: "white",
+                  boxShadow: "0 4px 6px rgba(66, 133, 244, 0.3)",
+                }}
+                onClick={() => document.getElementById("file-upload")?.click()}
+              >
+                Get Started
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="container pb-5" style={{ marginTop: "4rem" }}>
+      <div className="container pb-5" style={{ marginTop: "2rem" }}>
         <div className="row">
-          <div className="col-lg-10 mx-auto">
+          <div className={summary ? "col-lg-5" : "col-lg-6 mx-auto"}>
             {/* Upload Card */}
-            <div className="card move-on-hover">
+            <div
+              className="card"
+              style={{ border: "1px solid #e0e0e0", borderRadius: "12px" }}
+            >
               <div className="card-body p-4">
-                <div className="row">
-                  <div className="col-lg-12">
-                    {/* Upload Area */}
-                    <div
-                      className={`card-upload border-radius-lg p-5 text-center ${
-                        dragOver ? "drag-over" : ""
-                      }`}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
+                {/* Error Alert */}
+                {error && (
+                  <div
+                    className="alert alert-danger alert-dismissible fade show mb-3"
+                    role="alert"
+                  >
+                    <i className="material-symbols-rounded me-2">error</i>
+                    <strong>Error!</strong> {error}
+                    <button
+                      type="button"
+                      className="btn-close"
+                      onClick={() => setError("")}
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                )}
+
+                {/* Upload Area */}
+                <div
+                  className={`p-5 text-center ${dragOver ? "drag-over" : ""}`}
+                  style={{
+                    border: "2px dashed #d0d0d0",
+                    borderRadius: "8px",
+                    background: "#fafafa",
+                  }}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  {selectedFile ? (
+                    <div className="d-flex align-items-center justify-content-center">
+                      <i
+                        className="material-symbols-rounded icon-lg"
+                        style={{ color: "#4285F4", fontSize: "3rem" }}
+                      >
+                        description
+                      </i>
+                      <div className="ms-3 text-start">
+                        <h6 className="mb-0">{selectedFile.name}</h6>
+                        <p className="text-sm text-secondary mb-0">
+                          {(selectedFile.size / 1024).toFixed(2)} KB
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <i
+                        className="material-symbols-rounded mb-3"
+                        style={{ fontSize: "4rem", color: "#4285F4" }}
+                      >
+                        description
+                      </i>
+                      <h5 className="mb-3" style={{ color: "#333" }}>
+                        Drag & Drop
+                      </h5>
+                      <p className="text-secondary mb-0">or</p>
+                      <label
+                        htmlFor="file-upload"
+                        className="btn mt-3"
+                        style={{
+                          background: "#4285F4",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "10px 30px",
+                          color: "white",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Upload Document
+                        <input
+                          id="file-upload"
+                          type="file"
+                          onChange={handleFileChange}
+                          className="d-none"
+                          accept=".pdf,.png,.jpg,.jpeg"
+                        />
+                      </label>
+                    </>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                {selectedFile && (
+                  <div className="mt-4">
+                    <button
+                      className="btn w-100 mb-2"
+                      style={{
+                        background: "#4285F4",
+                        border: "none",
+                        borderRadius: "6px",
+                        padding: "12px",
+                        color: "white",
+                      }}
+                      onClick={handleUpload}
+                      disabled={loading}
                     >
-                      {selectedFile ? (
-                        <div className="file-name">
-                          <i className="material-symbols-rounded icon-lg">
-                            description
-                          </i>
-                          <div className="ms-3">
-                            <h6 className="mb-0">{selectedFile.name}</h6>
-                            <p className="text-sm text-secondary mb-0">
-                              {(selectedFile.size / 1024).toFixed(2)} KB
-                            </p>
-                          </div>
-                        </div>
+                      {loading ? (
+                        <>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Analyzing...
+                        </>
                       ) : (
                         <>
-                          <i className="material-symbols-rounded icon-lg mb-3">
-                            cloud_upload
+                          <i className="material-symbols-rounded me-2">
+                            auto_awesome
                           </i>
-                          <h5 className="text-dark mb-3">
-                            Drop your file here
-                          </h5>
-                          <p className="text-sm text-secondary mb-3">
-                            PDF, PNG, or JPEG files • Max 3MB
-                          </p>
-                          <label
-                            htmlFor="file-upload"
-                            className="btn bg-gradient-primary mb-0"
-                          >
-                            <i className="material-symbols-rounded me-2">
-                              upload_file
-                            </i>
-                            Choose File
-                            <input
-                              id="file-upload"
-                              type="file"
-                              onChange={handleFileChange}
-                              className="d-none"
-                              accept=".pdf,.png,.jpg,.jpeg"
-                            />
-                          </label>
+                          Analyze Document
                         </>
                       )}
-                    </div>
+                    </button>
+                    <button
+                      className="btn btn-outline-secondary w-100"
+                      style={{ borderRadius: "6px", padding: "12px" }}
+                      onClick={() => {
+                        setSelectedFile(null);
+                        setSummary("");
+                        setError("");
+                      }}
+                    >
+                      <i className="material-symbols-rounded me-2">close</i>
+                      Clear
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
 
-                    {/* Error Alert */}
-                    {error && (
-                      <div
-                        className="alert alert-danger alert-dismissible fade show mt-4"
-                        role="alert"
+          {/* Insights Panel */}
+          {summary && typeof summary === "object" && summary.keyInsights && (
+            <div className="col-lg-6">
+              <div
+                className="card"
+                style={{ border: "1px solid #e0e0e0", borderRadius: "12px" }}
+              >
+                <div className="card-body p-0">
+                  {/* Header with Vehicle Title and Contract Strength */}
+                  <div className="d-flex justify-content-between align-items-start p-4 pb-3">
+                    <div>
+                      <h4
+                        className="mb-1"
+                        style={{
+                          color: "#1a1a1a",
+                          fontWeight: 600,
+                          fontSize: "1.75rem",
+                        }}
                       >
-                        <i className="material-symbols-rounded me-2">error</i>
-                        <strong>Error!</strong> {error}
-                        <button
-                          type="button"
-                          className="btn-close"
-                          onClick={() => setError("")}
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    {selectedFile && (
-                      <div className="row mt-4">
-                        <div className="col-md-6">
-                          <button
-                            className="btn bg-gradient-primary w-100 mb-0"
-                            onClick={handleUpload}
-                            disabled={loading}
-                          >
-                            {loading ? (
-                              <>
-                                <span
-                                  className="spinner-border spinner-border-sm me-2"
-                                  role="status"
-                                  aria-hidden="true"
-                                ></span>
-                                Processing...
-                              </>
-                            ) : (
-                              <>
-                                <i className="material-symbols-rounded me-2">
-                                  auto_awesome
-                                </i>
-                                Summarize Document
-                              </>
-                            )}
-                          </button>
-                        </div>
-                        <div className="col-md-6">
-                          <button
-                            className="btn btn-outline-secondary w-100 mb-0"
-                            onClick={() => {
-                              setSelectedFile(null);
-                              setSummary("");
-                              setError("");
+                        Contract Analysis
+                      </h4>
+                      {summary.vehicleModel && (
+                        <p
+                          className="text-secondary mb-0"
+                          style={{ fontSize: "1.1rem" }}
+                        >
+                          {summary.vehicleModel.year &&
+                            `${summary.vehicleModel.year} `}
+                          {summary.vehicleModel.make &&
+                            `${summary.vehicleModel.make} `}
+                          {summary.vehicleModel.model &&
+                            summary.vehicleModel.model}
+                          {summary.vehicleModel.trim &&
+                            ` ${summary.vehicleModel.trim}`}
+                        </p>
+                      )}
+                    </div>
+                    {summary.contractStrength !== null &&
+                      summary.contractStrength !== undefined && (
+                        <div
+                          style={{
+                            background: "#1a73e8",
+                            color: "white",
+                            padding: "20px 24px",
+                            borderRadius: "12px",
+                            textAlign: "center",
+                            minWidth: "120px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: "2.5rem",
+                              fontWeight: 700,
+                              lineHeight: 1,
                             }}
                           >
-                            <i className="material-symbols-rounded me-2">
-                              close
-                            </i>
-                            Clear
-                          </button>
+                            {summary.contractStrength}
+                          </div>
+                          <div
+                            style={{ fontSize: "0.875rem", marginTop: "8px" }}
+                          >
+                            Contract Strength
+                          </div>
                         </div>
+                      )}
+                  </div>
+
+                  {/* Navigation Tabs */}
+                  <div className="px-4">
+                    <div
+                      style={{
+                        borderBottom: "2px solid #e0e0e0",
+                        display: "flex",
+                        gap: "2rem",
+                      }}
+                    >
+                      <button
+                        style={{
+                          background: "none",
+                          border: "none",
+                          padding: "12px 0",
+                          color: "#1a73e8",
+                          fontWeight: 500,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                          borderBottom: "3px solid #1a73e8",
+                          marginBottom: "-2px",
+                        }}
+                      >
+                        Overview
+                      </button>
+                      <button
+                        style={{
+                          background: "none",
+                          border: "none",
+                          padding: "12px 0",
+                          color: "#5f6368",
+                          fontWeight: 500,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Key Clauses
+                      </button>
+                      <button
+                        style={{
+                          background: "none",
+                          border: "none",
+                          padding: "12px 0",
+                          color: "#5f6368",
+                          fontWeight: 500,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Risks
+                      </button>
+                      <button
+                        style={{
+                          background: "none",
+                          border: "none",
+                          padding: "12px 0",
+                          color: "#5f6368",
+                          fontWeight: 500,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Insights
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Content Area with Sidebar */}
+                  <div className="d-flex" style={{ minHeight: "400px" }}>
+                    {/* Main Content */}
+                    <div className="flex-grow-1 p-4">
+                      {/* Key Insights Section */}
+                      <h5
+                        className="mb-3"
+                        style={{
+                          color: "#1a1a1a",
+                          fontWeight: 600,
+                          fontSize: "1.25rem",
+                        }}
+                      >
+                        Key Insights
+                      </h5>
+                      <div style={{ marginBottom: "2rem" }}>
+                        {summary.keyInsights &&
+                          summary.keyInsights.map((insight, idx) => (
+                            <div
+                              key={idx}
+                              className="d-flex align-items-start mb-3"
+                            >
+                              <i
+                                className="material-symbols-rounded me-2"
+                                style={{
+                                  color:
+                                    insight.icon === "alert"
+                                      ? "#ea4335"
+                                      : insight.icon === "wrench"
+                                        ? "#fbbc04"
+                                        : "#5f6368",
+                                  fontSize: "1.5rem",
+                                }}
+                              >
+                                {insight.icon === "alert"
+                                  ? "warning"
+                                  : insight.icon === "wrench"
+                                    ? "build"
+                                    : "description"}
+                              </i>
+                              <span
+                                style={{ color: "#1a1a1a", lineHeight: "1.5" }}
+                              >
+                                {insight.text}
+                              </span>
+                            </div>
+                          ))}
                       </div>
-                    )}
+
+                      {/* Recommendations Section */}
+                      {summary.recommendations &&
+                        summary.recommendations.length > 0 && (
+                          <div>
+                            <h5
+                              className="mb-3"
+                              style={{
+                                color: "#1a1a1a",
+                                fontWeight: 600,
+                                fontSize: "1.25rem",
+                              }}
+                            >
+                              Recommendations
+                            </h5>
+                            <div>
+                              {summary.recommendations.map((rec, idx) => (
+                                <div
+                                  key={`rec-${idx}`}
+                                  className="d-flex align-items-start mb-3"
+                                >
+                                  <i
+                                    className="material-symbols-rounded me-2"
+                                    style={{
+                                      color:
+                                        rec.icon === "lightbulb"
+                                          ? "#fbbc04"
+                                          : rec.icon === "checkmark"
+                                            ? "#34a853"
+                                            : "#5f6368",
+                                      fontSize: "1.5rem",
+                                    }}
+                                  >
+                                    {rec.icon === "lightbulb"
+                                      ? "lightbulb"
+                                      : rec.icon === "checkmark"
+                                        ? "check_circle"
+                                        : "build"}
+                                  </i>
+                                  <span
+                                    style={{
+                                      color: "#1a1a1a",
+                                      lineHeight: "1.5",
+                                    }}
+                                  >
+                                    {rec.text}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+
+                    {/* Right Sidebar */}
+                    <div
+                      style={{
+                        width: "280px",
+                        borderLeft: "1px solid #e0e0e0",
+                        padding: "1.5rem",
+                        background: "#fafafa",
+                      }}
+                    >
+                      {/* Benchmark Section */}
+                      {summary.benchmark && (
+                        <div className="mb-4">
+                          <h6
+                            style={{
+                              color: "#1a1a1a",
+                              fontWeight: 600,
+                              fontSize: "1rem",
+                              marginBottom: "1rem",
+                            }}
+                          >
+                            Benchmark
+                          </h6>
+                          <div>
+                            <div
+                              style={{
+                                color: "#5f6368",
+                                fontSize: "0.875rem",
+                                marginBottom: "0.5rem",
+                              }}
+                            >
+                              Your Spending
+                            </div>
+                            <div
+                              style={{
+                                color: "#1a1a1a",
+                                fontSize: "1.75rem",
+                                fontWeight: 700,
+                                marginBottom: "0.5rem",
+                              }}
+                            >
+                              $
+                              {summary.benchmark.spending
+                                ? summary.benchmark.spending.toLocaleString()
+                                : "0"}
+                            </div>
+                            <div
+                              style={{ color: "#5f6368", fontSize: "0.875rem" }}
+                            >
+                              {summary.benchmark.comparison}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Upcoming Events Section */}
+                      {summary.upcomingEvents &&
+                        summary.upcomingEvents.length > 0 && (
+                          <div>
+                            <h6
+                              style={{
+                                color: "#1a1a1a",
+                                fontWeight: 600,
+                                fontSize: "1rem",
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              Upcoming Events
+                            </h6>
+                            {summary.upcomingEvents.map((event, idx) => (
+                              <div
+                                key={`event-${idx}`}
+                                className="d-flex align-items-start mb-3"
+                              >
+                                <i
+                                  className="material-symbols-rounded me-2"
+                                  style={{
+                                    color: "#1a73e8",
+                                    fontSize: "1.25rem",
+                                  }}
+                                >
+                                  event
+                                </i>
+                                <div>
+                                  <div
+                                    style={{
+                                      color: "#1a1a1a",
+                                      fontSize: "0.875rem",
+                                      lineHeight: "1.4",
+                                    }}
+                                  >
+                                    {event.text}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Summary Card */}
-            {summary && (
-              <div className="card summary-card mt-4">
-                {/* Check if structured JSON response */}
-                {typeof summary === "object" && summary.keyInsights ? (
-                  <>
-                    {/* Header with Contract Strength */}
-                    <div className="card-header bg-gradient-primary p-3">
-                      <div className="d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <i className="material-symbols-rounded text-white me-2">
-                            summarize
-                          </i>
-                          <h5 className="text-white mb-0">Contract Analysis</h5>
-                        </div>
-                        {summary.contractStrength !== null &&
-                          summary.contractStrength !== undefined && (
-                            <div className="text-center">
-                              <h2 className="text-white mb-0">
-                                {summary.contractStrength}
-                              </h2>
-                              <small className="text-white">
-                                Contract Strength
-                              </small>
-                            </div>
-                          )}
-                      </div>
-                    </div>
-
-                    <div className="card-body p-4">
-                      {/* Vehicle Model */}
-                      {summary.vehicleModel && (
-                        <div className="mb-4">
-                          <div className="card bg-gradient-dark">
-                            <div className="card-body p-3">
-                              <div className="d-flex align-items-center">
-                                <i className="material-symbols-rounded text-white text-lg me-3">
-                                  directions_car
-                                </i>
-                                <div>
-                                  <h5 className="text-white mb-0">
-                                    {summary.vehicleModel.year &&
-                                      `${summary.vehicleModel.year} `}
-                                    {summary.vehicleModel.make &&
-                                      `${summary.vehicleModel.make} `}
-                                    {summary.vehicleModel.model &&
-                                      summary.vehicleModel.model}
-                                  </h5>
-                                  {summary.vehicleModel.trim && (
-                                    <small className="text-white opacity-8">
-                                      {summary.vehicleModel.trim}
-                                    </small>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Key Insights */}
-                      {summary.keyInsights &&
-                        summary.keyInsights.length > 0 && (
-                          <div className="mb-4">
-                            <h6 className="text-dark mb-3">
-                              <i className="material-symbols-rounded text-sm me-1">
-                                lightbulb
-                              </i>
-                              Key Insights
-                            </h6>
-                            {summary.keyInsights.map((insight, idx) => (
-                              <div
-                                key={idx}
-                                className="d-flex align-items-start mb-2"
-                              >
-                                <i className="material-symbols-rounded text-warning me-2">
-                                  {insight.icon === "alert"
-                                    ? "error"
-                                    : insight.icon === "document"
-                                      ? "description"
-                                      : "build"}
-                                </i>
-                                <span className="text-dark">
-                                  {insight.text}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                      {/* Key Clauses */}
-                      {summary.keyClauses && summary.keyClauses.length > 0 && (
-                        <div className="mb-4">
-                          <h6 className="text-dark mb-3">
-                            <i className="material-symbols-rounded text-sm me-1">
-                              gavel
-                            </i>
-                            Key Clauses
-                          </h6>
-                          {summary.keyClauses.map((clause, idx) => (
-                            <div key={idx} className="card mb-2">
-                              <div className="card-body p-3">
-                                <div className="d-flex align-items-start">
-                                  <i className="material-symbols-rounded text-info me-2">
-                                    article
-                                  </i>
-                                  <div>
-                                    <h6 className="text-dark mb-1">
-                                      {clause.title}
-                                    </h6>
-                                    <small className="text-secondary">
-                                      {clause.description}
-                                    </small>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Recommendations */}
-                      {summary.recommendations &&
-                        summary.recommendations.length > 0 && (
-                          <div className="mb-4">
-                            <h6 className="text-dark mb-3">
-                              <i className="material-symbols-rounded text-sm me-1">
-                                recommend
-                              </i>
-                              Recommendations
-                            </h6>
-                            {summary.recommendations.map((rec, idx) => (
-                              <div
-                                key={idx}
-                                className="d-flex align-items-start mb-2"
-                              >
-                                <i className="material-symbols-rounded text-success me-2">
-                                  {rec.icon === "lightbulb"
-                                    ? "lightbulb"
-                                    : rec.icon === "checkmark"
-                                      ? "check_circle"
-                                      : "build"}
-                                </i>
-                                <span className="text-dark">{rec.text}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                      <div className="row">
-                        {/* Benchmark */}
-                        {summary.benchmark && summary.benchmark.spending && (
-                          <div className="col-md-6 mb-3">
-                            <div className="card">
-                              <div className="card-body p-3">
-                                <h6 className="text-dark mb-2">Benchmark</h6>
-                                <h4 className="text-primary mb-1">
-                                  ${summary.benchmark.spending.toLocaleString()}
-                                </h4>
-                                {summary.benchmark.comparison && (
-                                  <small className="text-secondary">
-                                    {summary.benchmark.comparison}
-                                  </small>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Upcoming Events */}
-                        {summary.upcomingEvents &&
-                          summary.upcomingEvents.length > 0 && (
-                            <div className="col-md-6 mb-3">
-                              <div className="card">
-                                <div className="card-body p-3">
-                                  <h6 className="text-dark mb-2">
-                                    Upcoming Events
-                                  </h6>
-                                  {summary.upcomingEvents.map((event, idx) => (
-                                    <div key={idx} className="mb-2">
-                                      <div className="d-flex align-items-center">
-                                        <i className="material-symbols-rounded text-info me-2">
-                                          event
-                                        </i>
-                                        <small className="text-dark">
-                                          {event.text}
-                                        </small>
-                                      </div>
-                                      {event.daysUntil !== null &&
-                                        event.daysUntil !== undefined && (
-                                          <small className="text-secondary ms-4">
-                                            in {event.daysUntil} days
-                                          </small>
-                                        )}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                      </div>
-
-                      {/* Details */}
-                      {summary.details && (
-                        <div className="mt-3">
-                          <h6 className="text-dark mb-3">Contract Details</h6>
-                          <div className="row">
-                            {summary.details.salePrice && (
-                              <div className="col-md-4 mb-2">
-                                <small className="text-secondary">
-                                  Sale Price
-                                </small>
-                                <p className="text-dark mb-0">
-                                  <strong>
-                                    $
-                                    {summary.details.salePrice.toLocaleString()}
-                                  </strong>
-                                </p>
-                              </div>
-                            )}
-                            {summary.details.dealQuality && (
-                              <div className="col-md-4 mb-2">
-                                <small className="text-secondary">
-                                  Deal Quality
-                                </small>
-                                <p className="text-dark mb-0">
-                                  <span
-                                    className={`badge bg-${summary.details.dealQuality === "high" ? "success" : summary.details.dealQuality === "medium" ? "warning" : "danger"}`}
-                                  >
-                                    {summary.details.dealQuality.toUpperCase()}
-                                  </span>
-                                </p>
-                              </div>
-                            )}
-                            {summary.details.financing &&
-                              summary.details.financing.principalAmount && (
-                                <div className="col-md-4 mb-2">
-                                  <small className="text-secondary">
-                                    Amount Financed
-                                  </small>
-                                  <p className="text-dark mb-0">
-                                    <strong>
-                                      $
-                                      {summary.details.financing.principalAmount.toLocaleString()}
-                                    </strong>
-                                  </p>
-                                </div>
-                              )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                ) : null}
-                {/* Removed fallback for plain text - now shows error modal instead */}
-                <div className="card-footer bg-transparent border-0 p-3">
-                  <small className="text-muted">
-                    <i className="material-symbols-rounded text-sm me-1">
-                      info
-                    </i>
-                    Generated by AI • Please verify critical information
-                  </small>
-                </div>
-              </div>
-            )}
-
-            {/* Features Section */}
-            {!summary && !selectedFile && (
-              <div className="row mt-5">
-                <div className="col-md-4 mb-4">
-                  <div className="text-center">
-                    <div className="icon icon-shape bg-gradient-primary shadow text-center border-radius-md mb-3 mx-auto">
-                      <i
-                        className="material-symbols-rounded opacity-10"
-                        style={{ fontSize: "2rem" }}
-                      >
-                        speed
-                      </i>
-                    </div>
-                    <h5 className="text-dark">Lightning Fast</h5>
-                    <p className="text-secondary text-sm">
-                      Get summaries in seconds with our AI-powered engine
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4 mb-4">
-                  <div className="text-center">
-                    <div className="icon icon-shape bg-gradient-primary shadow text-center border-radius-md mb-3 mx-auto">
-                      <i
-                        className="material-symbols-rounded opacity-10"
-                        style={{ fontSize: "2rem" }}
-                      >
-                        document_scanner
-                      </i>
-                    </div>
-                    <h5 className="text-dark">OCR Enabled</h5>
-                    <p className="text-secondary text-sm">
-                      Works with scanned documents using advanced OCR technology
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4 mb-4">
-                  <div className="text-center">
-                    <div className="icon icon-shape bg-gradient-primary shadow text-center border-radius-md mb-3 mx-auto">
-                      <i
-                        className="material-symbols-rounded opacity-10"
-                        style={{ fontSize: "2rem" }}
-                      >
-                        shield
-                      </i>
-                    </div>
-                    <h5 className="text-dark">Secure & Private</h5>
-                    <p className="text-secondary text-sm">
-                      Your documents are processed securely and never stored
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
+
       <Footer />
     </div>
   );
