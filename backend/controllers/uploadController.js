@@ -12,6 +12,7 @@ exports.summarizeDocument = async (req, res, next) => {
       return res.status(400).json({ message: "No file uploaded." });
 
     const mimeType = req.file.mimetype;
+    const documentType = req.body.documentType || "not-sure"; // Get document type from request
 
     let fileContent = "";
     let summary;
@@ -34,38 +35,8 @@ exports.summarizeDocument = async (req, res, next) => {
         req.file.buffer,
         mimeType,
         customPrompt,
+        documentType, // Pass document type to service
       );
-    }
-    // If using Ollama with PDF, send directly to Ollama Vision for OCR + Summary
-    else if (AI_PROVIDER === "ollama" && mimeType === "application/pdf") {
-      console.log(
-        "Using Ollama Vision for PDF extraction and summarization...",
-      );
-      summary = await ollamaService.extractAndSummarizePDF(req.file.buffer);
-    } else {
-      // For Gemini or text files, extract text first
-      if (mimeType === "application/pdf") {
-        console.log("Extracting text from PDF...");
-        fileContent = await extractTextFromPDF(req.file.buffer);
-      } else if (mimeType.startsWith("text")) {
-        console.log("Extracting text from text file...");
-        fileContent = req.file.buffer.toString("utf8");
-      } else {
-        return res.status(400).json({ message: "Unsupported file type." });
-      }
-
-      if (!fileContent || !fileContent.trim()) {
-        return res.status(400).json({ message: "PDF has no readable text." });
-      }
-
-      // Choose AI provider for text summarization
-      if (AI_PROVIDER === "ollama") {
-        console.log("Using Ollama for text summarization...");
-        summary = await ollamaService.getSummary(fileContent);
-      } else {
-        console.log("Using Gemini for summarization...");
-        summary = await geminiService.getSummary(fileContent);
-      }
     }
 
     console.log("Final summary to send:", summary);
