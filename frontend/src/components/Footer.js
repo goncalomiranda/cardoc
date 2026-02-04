@@ -16,7 +16,7 @@ function Footer() {
                 VaultAI
               </h6>
               <p className="text-sm text-secondary">
-                Unlock insights from your documents with AI-powered analysis
+                Unlock insights from your contracts with AI-powered analysis
               </p>
             </div>
             <div>
