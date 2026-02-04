@@ -9,9 +9,14 @@ function Footer() {
         <div className="row">
           <div className="col-md-3 mb-4 ms-auto">
             <div>
-              <h6 className="font-weight-bolder mb-4 text-gradient">CarDoc</h6>
+              <h6
+                className="font-weight-bolder mb-4"
+                style={{ color: "#4285F4", fontWeight: 700 }}
+              >
+                VaultAI
+              </h6>
               <p className="text-sm text-secondary">
-                AI-powered document summarization for your car documents
+                Unlock insights from your documents with AI-powered analysis
               </p>
             </div>
             <div>

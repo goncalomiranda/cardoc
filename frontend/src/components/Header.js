@@ -20,9 +20,18 @@ function Header() {
             }}
           >
             <div className="container-fluid px-0">
-              <Link className="navbar-brand font-weight-bolder ms-sm-3" to="/">
-                <i className="material-symbols-rounded me-2">directions_car</i>
-                CarDoc
+              <Link
+                className="navbar-brand font-weight-bolder ms-sm-3"
+                to="/"
+                style={{ color: "#4285F4" }}
+              >
+                <i
+                  className="material-symbols-rounded me-2"
+                  style={{ color: "#4285F4" }}
+                >
+                  shield
+                </i>
+                VaultAI
               </Link>
               <button
                 className="navbar-toggler shadow-none ms-2"
