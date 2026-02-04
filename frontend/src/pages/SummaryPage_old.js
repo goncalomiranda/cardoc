@@ -112,7 +112,7 @@ function SummaryPage() {
                 color: "#1a1a1a",
               }}
             >
-              Unlock Insights from Your Documents
+              Unlock Insights from Your Contracts
             </h1>
             <p
               className="lead mb-4"
@@ -121,7 +121,7 @@ function SummaryPage() {
                 color: "#6c757d",
               }}
             >
-              A secure vault to store, organize, and analyze your important documents.
+              A secure vault to store, organize, and analyze your important contracts.
             </p>
             <button
               className="btn btn-primary btn-lg px-5 py-3"
