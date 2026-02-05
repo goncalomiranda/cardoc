@@ -2,6 +2,8 @@ const { extractTextFromPDF } = require("../services/pdfExtractor");
 const geminiService = require("../services/geminiService");
 const ollamaService = require("../services/ollamaService");
 const documentIntelligenceService = require("../services/documentIntelligenceService");
+const fs = require("fs");
+const path = require("path");
 
 // AI provider: 'gemini', 'ollama', or 'document-intelligence'
 const AI_PROVIDER = process.env.AI_PROVIDER || "document-intelligence";
@@ -28,8 +30,22 @@ exports.summarizeDocument = async (req, res, next) => {
         `Using Document Intelligence API for ${mimeType} analysis...`,
       );
 
-      // Use custom prompt if provided in environment
-      const customPrompt = process.env.DOCUMENT_INTELLIGENCE_PROMPT || null;
+      // Read custom prompt from file if PROMPT_FILE is set, otherwise use env var
+      let customPrompt = process.env.DOCUMENT_INTELLIGENCE_PROMPT || null;
+      if (process.env.DOCUMENT_INTELLIGENCE_PROMPT_FILE) {
+        try {
+          const promptPath = path.join(
+            __dirname,
+            "..",
+            process.env.DOCUMENT_INTELLIGENCE_PROMPT_FILE,
+          );
+          customPrompt = fs.readFileSync(promptPath, "utf-8");
+          console.log(`Loaded prompt from file: ${promptPath}`);
+        } catch (error) {
+          console.error(`Failed to read prompt file: ${error.message}`);
+          // Fallback to env var if file reading fails
+        }
+      }
 
       summary = await documentIntelligenceService.analyzeDocument(
         req.file.buffer,
